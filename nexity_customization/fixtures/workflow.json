@@ -1,0 +1,150 @@
+[
+	{
+		"name": "MR cycle",
+		"doctype": "Workflow",
+		"workflow_name": "MR cycle",
+		"document_type": "Material Request",
+		"is_active": 1,
+		"override_status": 0,
+		"send_email_alert": 1,
+		"workflow_state_field": "workflow_state",
+		"states": [
+			{
+				"state": "Draft",
+				"doc_status": "0",
+				"allow_edit": "Material Request User",
+				"send_email": 1,
+				"message": "the request is been sent to department head\n"
+			},
+			{
+				"state": "Draft",
+				"doc_status": "0",
+				"allow_edit": "Stock Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Pending Approval (Stock Manager)",
+				"doc_status": "1",
+				"allow_edit": "Stock Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Pending Approval",
+				"doc_status": "1",
+				"allow_edit": "Material Request Approver",
+				"send_email": 1,
+				"message": "The Material Issue request {{doc.name}} been submitted to Department head."
+			},
+			{
+				"state": "Approved",
+				"doc_status": "1",
+				"allow_edit": "System Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Rejected",
+				"doc_status": "2",
+				"allow_edit": "System Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Submitted",
+				"doc_status": "1",
+				"allow_edit": "Stock Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Issued",
+				"doc_status": "1",
+				"allow_edit": "System Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Accepted",
+				"doc_status": "1",
+				"allow_edit": "System Manager",
+				"send_email": 1
+			},
+			{
+				"state": "Awaiting Salvage",
+				"doc_status": "1",
+				"allow_edit": "System Manager",
+				"send_email": 1
+			},
+			{
+				"state": "MR Closed",
+				"doc_status": "1",
+				"allow_edit": "Material Request User",
+				"send_email": 1
+			}
+		],
+		"transitions": [
+			{
+				"state": "Draft",
+				"action": "Submit",
+				"next_state": "Pending Approval",
+				"allowed": "Material Request User",
+				"allow_self_approval": 1,
+				"send_email_to_creator": 1
+			},
+			{
+				"state": "Draft",
+				"action": "Submit",
+				"next_state": "Pending Approval (Stock Manager)",
+				"allowed": "Stock User",
+				"allow_self_approval": 1,
+				"condition": "doc.material_request_type == \"Material Transfer\""
+			},
+			{
+				"state": "Draft",
+				"action": "Submit",
+				"next_state": "Submitted",
+				"allowed": "Stock Manager",
+				"allow_self_approval": 1,
+				"condition": "doc.material_request_type == \"Purchase\""
+			},
+			{
+				"state": "Pending Approval",
+				"action": "Approve",
+				"next_state": "Approved",
+				"allowed": "Material Request Approver",
+				"allow_self_approval": 1
+			},
+			{
+				"state": "Pending Approval",
+				"action": "Reject",
+				"next_state": "Rejected",
+				"allowed": "Material Request Approver",
+				"allow_self_approval": 1
+			},
+			{
+				"state": "Pending Approval (Stock Manager)",
+				"action": "Approve",
+				"next_state": "Approved",
+				"allowed": "Stock Manager",
+				"allow_self_approval": 1
+			},
+			{
+				"state": "Pending Approval (Stock Manager)",
+				"action": "Reject",
+				"next_state": "Rejected",
+				"allowed": "Stock Manager",
+				"allow_self_approval": 1
+			},
+			{
+				"state": "Issued",
+				"action": "Accept",
+				"next_state": "Accepted",
+				"allowed": "Material Request User",
+				"allow_self_approval": 1
+			},
+			{
+				"state": "Awaiting Salvage",
+				"action": "Close MR",
+				"next_state": "MR Closed",
+				"allowed": "Material Request User",
+				"allow_self_approval": 1
+			}
+		]
+	}
+]

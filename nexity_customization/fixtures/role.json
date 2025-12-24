@@ -1,0 +1,20 @@
+[
+  {
+    "doctype": "Role",
+    "name": "Material Request Approver",
+    "role_name": "Material Request Approver",
+    "desk_access": 1,
+    "disabled": 0,
+    "home_page": "/app/todo/view/kanban/Todo%20Task?allocated_to=vivek%40teqcty.com",
+    "two_factor_auth": 0
+  },
+  {
+    "doctype": "Role",
+    "name": "Material Request User",
+    "role_name": "Material Request User",
+    "desk_access": 1,
+    "disabled": 0,
+    "home_page": "/app/material-request/view/kanban/MR%20request?material_request_type=Material+Issue&owner=riya%40teqcty.com",
+    "two_factor_auth": 0
+  }
+]

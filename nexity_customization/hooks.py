@@ -43,7 +43,7 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Material Request": "public/js/material_request.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -79,11 +79,50 @@ app_license = "mit"
 # 	"filters": "nexity_customization.utils.jinja_filters"
 # }
 
+# Fixtures
+# ---------
+# Export fixtures to be installed when the app is installed
+# Note: Workflow states must be installed before workflows
+
+fixtures = [
+	{
+		"doctype": "Workflow State",
+		"filters": [
+			["name", "in", ["Issued", "Accepted", "Awaiting Salvage", "MR Closed","Pending Approval (Stock Manager)","Pending Approval","Submitted","Draft"]]
+		]
+	},
+	{
+		"doctype": "Workflow",
+		"filters": [
+			["name", "in", ["MR cycle"]]
+		]
+	},
+    {
+        "doctype": "Role",
+        "filters": [
+            ["role_name", "in", [
+                "Material Request Approver",
+                "Material Request User"
+            ]]
+        ]
+    },
+    {
+        "doctype": "Workflow Action Master",
+        "filters": [
+            ["workflow_action_name", "in", [
+                "Submit",
+                "Accept",
+                "Close MR"
+            ]]
+        ]
+    }
+]
+
 # Installation
 # ------------
 
 # before_install = "nexity_customization.install.before_install"
-# after_install = "nexity_customization.install.after_install"
+#after_install = "nexity_customization.install.after_install"
 
 # Uninstallation
 # ------------

@@ -1,0 +1,23 @@
+{
+ "content": null,
+ "creation": "2025-12-23 18:56:58.130430",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-12-23 18:56:58.130430",
+ "modified_by": "Administrator",
+ "module": "Nexity Customization",
+ "name": "mr-success",
+ "owner": "Administrator",
+ "page_name": "mr-success",
+ "roles": [
+  {
+   "role": "Material Request User"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": "mr_success.css",
+ "system_page": 0,
+ "title": "Material Request Success"
+}
