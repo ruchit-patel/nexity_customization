@@ -84,39 +84,39 @@ doctype_js = {"Material Request": "public/js/material_request.js"}
 # Export fixtures to be installed when the app is installed
 # Note: Workflow states must be installed before workflows
 
-fixtures = [
-	{
-		"doctype": "Workflow State",
-		"filters": [
-			["name", "in", ["Issued", "Accepted", "Awaiting Salvage", "MR Closed","Pending Approval (Stock Manager)","Pending Approval","Submitted","Draft"]]
-		]
-	},
-	{
-		"doctype": "Workflow",
-		"filters": [
-			["name", "in", ["MR cycle"]]
-		]
-	},
-    {
-        "doctype": "Role",
-        "filters": [
-            ["role_name", "in", [
-                "Material Request Approver",
-                "Material Request User"
-            ]]
-        ]
-    },
-    {
-        "doctype": "Workflow Action Master",
-        "filters": [
-            ["workflow_action_name", "in", [
-                "Submit",
-                "Accept",
-                "Close MR"
-            ]]
-        ]
-    }
-]
+# fixtures = [
+# 	{
+# 		"doctype": "Workflow State",
+# 		"filters": [
+# 			["name", "in", ["Issued", "Accepted", "Awaiting Salvage", "MR Closed","Pending Approval (Stock Manager)","Pending Approval","Submitted","Draft"]]
+# 		]
+# 	},
+# 	{
+# 		"doctype": "Workflow",
+# 		"filters": [
+# 			["name", "in", ["MR cycle"]]
+# 		]
+# 	},
+#     {
+#         "doctype": "Role",
+#         "filters": [
+#             ["role_name", "in", [
+#                 "Material Request Approver",
+#                 "Material Request User"
+#             ]]
+#         ]
+#     },
+#     {
+#         "doctype": "Workflow Action Master",
+#         "filters": [
+#             ["workflow_action_name", "in", [
+#                 "Submit",
+#                 "Accept",
+#                 "Close MR"
+#             ]]
+#         ]
+#     }
+# ]
 
 # Installation
 # ------------
