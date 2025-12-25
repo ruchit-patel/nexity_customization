@@ -1,0 +1,242 @@
+/**
+ * Styles for Open Tasks Workspace Block
+ */
+
+.open-tasks-container {
+	background: var(--bg-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	overflow: hidden;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.open-tasks-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--border-color);
+	background: var(--fg-color);
+}
+
+.open-tasks-header h3 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	color: var(--heading-color);
+}
+
+.open-tasks-header .refresh-tasks {
+	padding: 4px 8px;
+	min-width: auto;
+}
+
+.open-tasks-header .refresh-tasks:hover {
+	background: var(--bg-light-gray);
+}
+
+.open-tasks-body {
+	flex: 1;
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 600px;
+	min-height: 300px;
+}
+
+.tasks-list {
+	padding: 8px;
+}
+
+.task-card {
+	background: var(--fg-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+	padding: 12px;
+	margin-bottom: 8px;
+	transition: all 0.2s ease;
+	cursor: pointer;
+}
+
+.task-card:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	border-color: var(--primary);
+}
+
+.task-card:last-child {
+	margin-bottom: 0;
+}
+
+.task-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 8px;
+	gap: 12px;
+}
+
+.task-title {
+	flex: 1;
+	min-width: 0;
+}
+
+.task-link {
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--text-color);
+	text-decoration: none;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.task-link:hover {
+	color: var(--primary);
+	text-decoration: underline;
+}
+
+.task-badges {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.task-meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	font-size: 12px;
+	color: var(--text-muted);
+	margin-bottom: 6px;
+}
+
+.task-meta-item {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.task-meta-item svg {
+	opacity: 0.6;
+}
+
+.task-description {
+	font-size: 13px;
+	color: var(--text-light);
+	margin-top: 6px;
+	margin-bottom: 6px;
+	line-height: 1.4;
+}
+
+.task-assigned {
+	font-size: 12px;
+	color: var(--text-muted);
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--border-color);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.task-assigned svg {
+	flex-shrink: 0;
+	opacity: 0.6;
+}
+
+.assigned-user {
+	display: inline-block;
+	background: var(--bg-light-gray);
+	padding: 2px 8px;
+	border-radius: 3px;
+	margin-right: 4px;
+	font-size: 11px;
+}
+
+/* Badge colors */
+.badge-light-blue {
+	background-color: var(--blue-100);
+	color: var(--blue-600);
+}
+
+.badge-light-gray {
+	background-color: var(--gray-100);
+	color: var(--gray-700);
+}
+
+.badge-light-orange {
+	background-color: var(--orange-100);
+	color: var(--orange-600);
+}
+
+.badge-light-red {
+	background-color: var(--red-100);
+	color: var(--red-600);
+}
+
+.badge-light-yellow {
+	background-color: var(--yellow-100);
+	color: var(--yellow-700);
+}
+
+/* Scrollbar styling */
+.open-tasks-body::-webkit-scrollbar {
+	width: 6px;
+}
+
+.open-tasks-body::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.open-tasks-body::-webkit-scrollbar-thumb {
+	background: var(--gray-300);
+	border-radius: 3px;
+}
+
+.open-tasks-body::-webkit-scrollbar-thumb:hover {
+	background: var(--gray-400);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.task-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.task-badges {
+		justify-content: flex-start;
+	}
+
+	.task-meta {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6px;
+	}
+}
+
+/* Loading and empty states */
+.open-tasks-body .spinner-border {
+	width: 24px;
+	height: 24px;
+	border-width: 2px;
+}
+
+.open-tasks-body .text-center {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.open-tasks-body .icon-lg {
+	width: 48px;
+	height: 48px;
+}
