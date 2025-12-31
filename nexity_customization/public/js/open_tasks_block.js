@@ -110,6 +110,9 @@
 						<p>Loading tasks...</p>
 					</div>
 				</div>
+				<div class="view-all-tasks" id="view-all-footer" style="display: none;">
+					<a href="/app/todo" class="view-all-link">View All Tasks →</a>
+				</div>
 			</div>
 		`;
 
@@ -286,15 +289,13 @@
 
 		html += '</div>';
 
-		if (!hasMore) {
-			html += `
-				<div class="view-all-tasks">
-					<a href="/app/todo" class="view-all-link">View All Tasks →</a>
-				</div>
-			`;
-		}
-
 		todosBody.innerHTML = html;
+
+		// Show/hide the footer based on hasMore
+		const footer = container.querySelector('#view-all-footer');
+		if (footer) {
+			footer.style.display = hasMore ? 'none' : 'block';
+		}
 
 		const taskCards = todosBody.querySelectorAll('.task-card');
 		taskCards.forEach(card => {
