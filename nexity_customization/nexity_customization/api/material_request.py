@@ -75,7 +75,7 @@ def get_next_approver_info(docname):
 @frappe.whitelist()
 def submit_with_confirmation(docname):
 	"""
-	Submit Material Request with additional logging
+	Submit Material Request after user confirmation
 
 	Args:
 		docname: Name of the Material Request document
@@ -86,8 +86,14 @@ def submit_with_confirmation(docname):
 	try:
 		doc = frappe.get_doc("Material Request", docname)
 
+		# Set flag to indicate confirmation was shown
+		frappe.flags.mr_submit_confirmed = True
+
 		# Submit the document
 		doc.submit()
+
+		# Clear the flag
+		frappe.flags.mr_submit_confirmed = False
 
 		# Get next approver info after submission
 		approver_info = get_next_approver_info(docname)
@@ -102,4 +108,5 @@ def submit_with_confirmation(docname):
 
 	except Exception as e:
 		frappe.log_error(f"Error submitting Material Request: {str(e)}")
+		frappe.flags.mr_submit_confirmed = False
 		return {"success": False, "message": str(e), "error": str(e)}

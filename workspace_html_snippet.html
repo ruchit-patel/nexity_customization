@@ -1,0 +1,29 @@
+<!--
+  Open Tasks Workspace Block
+
+  Copy and paste this code into a Workspace HTML block to display
+  all open tasks for the logged-in user.
+
+  Instructions:
+  1. Go to any Workspace in Desk
+  2. Click Edit (top right)
+  3. Add a new HTML block or edit an existing one
+  4. Paste this entire code below
+  5. Save the workspace
+-->
+
+<div id="open-tasks-block"></div>
+<style>
+@import url('/assets/nexity_customization/css/open_tasks_block.css');
+</style>
+<script>
+  frappe.require([
+    '/assets/nexity_customization/js/open_tasks_block.js'
+  ], function() {
+    frappe.after_ajax(function() {
+      if (window.renderOpenTasksBlock && root_element) {
+        window.renderOpenTasksBlock(root_element);
+      }
+    });
+  });
+</script>

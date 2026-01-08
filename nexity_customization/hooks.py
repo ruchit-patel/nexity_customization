@@ -176,13 +176,11 @@ doctype_js = {"Material Request": "public/js/material_request.js"}
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Material Request": {
+		"before_submit": "nexity_customization.nexity_customization.overrides.material_request.before_submit"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
