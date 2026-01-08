@@ -1,17 +1,28 @@
 frappe.ui.form.on('Material Request', {
 	refresh: function(frm) {
-		// Add custom submit button that shows confirmation
+		// Hide the standard Submit button and add our custom one
 		if (frm.doc.docstatus === 0 && !frm.is_new()) {
-			frm.page.set_primary_action(__('Submit for Approval'), function() {
-				show_submit_confirmation(frm);
-			});
+			// Hide the standard submit menu item
+			setTimeout(() => {
+				// Remove Submit from Actions dropdown
+				frm.page.clear_actions_menu();
+
+				// Remove the standard primary action (Submit button)
+				frm.page.clear_primary_action();
+
+				// Add our custom Submit button
+				frm.page.set_primary_action(__('Submit'), function() {
+					// Show confirmation dialog instead of direct submit
+					show_submit_confirmation(frm);
+				});
+			}, 10);
 		}
 	},
 
 	before_submit: function(frm) {
-		// This will be called when standard submit is used
-		// We'll handle it via our custom button instead
-		return true;
+		// Block any direct submit attempts
+		frappe.throw(__('Please use the Submit button to submit this Material Request.'));
+		return false;
 	}
 });
 
@@ -62,54 +73,44 @@ function show_submit_confirmation(frm) {
 }
 
 function submit_material_request(frm) {
-	//frappe.dom.freeze(__('Submitting Material Request...'));
+	// Call custom API which handles confirmation flag and submission
+	frappe.call({
+		method: 'nexity_customization.nexity_customization.api.material_request.submit_with_confirmation',
+		args: {
+			docname: frm.doc.name
+		},
+		callback: function(r) {
+			if (r.message && r.message.success) {
+				// Show success message
+				frappe.show_alert({
+					message: r.message.message,
+					indicator: 'green'
+				}, 5);
 
-	// Save the document first if it has unsaved changes
-	//frm.save().then(() => {
-		// Call custom API to submit and get approver info
-		frappe.call({
-			method: 'nexity_customization.nexity_customization.api.material_request.submit_with_confirmation',
-			args: {
-				docname: frm.doc.name
-			},
-			callback: function(r) {
-				frappe.dom.unfreeze();
+				// Reload the form
+				frm.reload_doc();
 
-				if (r.message && r.message.success) {
-					// Show success message
-					frappe.show_alert({
-						message: r.message.message,
-						indicator: 'green'
-					}, 5);
-
-					// Reload the form
-					frm.reload_doc();
-
-					// Redirect to success page with data
-					setTimeout(() => {
-						redirect_to_success_page(frm.doc.name, r.message);
-					}, 1000);
-				} else {
-					// Show error
-					frappe.msgprint({
-						title: __('Submission Failed'),
-						message: r.message?.message || r.message?.error || __('An error occurred'),
-						indicator: 'red'
-					});
-				}
-			},
-			error: function(err) {
-				frappe.dom.unfreeze();
+				// Redirect to success page with data
+				setTimeout(() => {
+					redirect_to_success_page(frm.doc.name, r.message);
+				}, 1000);
+			} else {
+				// Show error
 				frappe.msgprint({
-					title: __('Error'),
-					message: __('Failed to submit Material Request. Please try again.'),
+					title: __('Submission Failed'),
+					message: r.message?.message || r.message?.error || __('An error occurred'),
 					indicator: 'red'
 				});
 			}
-		});
-	// }).catch(() => {
-	//frappe.dom.unfreeze();
-	// });
+		},
+		error: function(err) {
+			frappe.msgprint({
+				title: __('Error'),
+				message: __('Failed to submit Material Request. Please try again.'),
+				indicator: 'red'
+			});
+		}
+	});
 }
 
 function redirect_to_success_page(docname, response_data) {

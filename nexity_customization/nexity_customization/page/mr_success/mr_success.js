@@ -115,21 +115,21 @@ class MRSuccessView {
 		}
 
 		const html = `
+
+			<!-- Action Buttons -->
+			<div class="action-buttons">
+				<button class="btn btn-primary btn-lg btn-new-request">
+					<i class="fa fa-plus"></i> Submit New Request
+				</button>
+				<button class="btn btn-default btn-lg btn-dashboard">
+					<i class="fa fa-th-list"></i> View Dashboard
+				</button>
+				<button class="btn btn-secondary btn-lg btn-view-request">
+					<i class="fa fa-eye"></i> View This Request
+				</button>
+			</div>
 			<div class="mr-success-container">
 				<!-- Success Header -->
-					<!-- Action Buttons -->
-				<div class="action-buttons">
-					<button class="btn btn-primary btn-lg btn-new-request">
-						<i class="fa fa-plus"></i> Submit New Request
-					</button>
-					<button class="btn btn-default btn-lg btn-dashboard">
-						<i class="fa fa-th-list"></i> View Dashboard
-					</button>
-					<button class="btn btn-secondary btn-lg btn-view-request">
-						<i class="fa fa-eye"></i> View This Request
-					</button>
-				</div>
-				
 				<div class="success-header">
 					<div class="success-icon">
 						<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
@@ -138,56 +138,58 @@ class MRSuccessView {
 							<path d="M26 40L35 49L54 30" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
 					</div>
-					<h2 class="success-title">Material Request Submitted Successfully!</h2>
-					<p class="success-subtitle">Your request has been submitted and is awaiting approval</p>
+					<h2 class="success-title">Material Request Submitted for Approval!</h2>
 				</div>
 
-				<!-- Request Details Card -->
-				<div class="detail-card">
-					<div class="card-header">
-						<h4><i class="fa fa-file-text"></i> Request Details</h4>
+				<!-- Side by Side Cards -->
+				<div class="cards-row">
+					<!-- Request Details Card -->
+					<div class="detail-card half-width">
+						<div class="card-header">
+							<h4><i class="fa fa-file-text"></i> Request Details</h4>
+						</div>
+						<div class="card-body">
+							<div class="detail-row">
+								<span class="detail-label">Request ID:</span>
+								<span class="detail-value">
+									<a href="/app/material-request/${this.docname}" class="text-primary">
+										<strong>${this.docname}</strong>
+									</a>
+								</span>
+							</div>
+							<div class="detail-row">
+								<span class="detail-label">Current Status:</span>
+								<span class="detail-value">
+									<span class="badge badge-info">${data.workflow_state || 'Submitted'}</span>
+								</span>
+							</div>
+							<div class="detail-row">
+								<span class="detail-label">Request Type:</span>
+								<span class="detail-value">${info.material_request_type || '-'}</span>
+							</div>
+							<div class="detail-row">
+								<span class="detail-label">Company:</span>
+								<span class="detail-value">${info.company || '-'}</span>
+							</div>
+							<div class="detail-row">
+								<span class="detail-label">Required By:</span>
+								<span class="detail-value">${info.schedule_date ? frappe.datetime.str_to_user(info.schedule_date) : '-'}</span>
+							</div>
+							<div class="detail-row">
+								<span class="detail-label">Total Quantity:</span>
+								<span class="detail-value">${info.total_qty || 0}</span>
+							</div>
+						</div>
 					</div>
-					<div class="card-body">
-						<div class="detail-row">
-							<span class="detail-label">Request ID:</span>
-							<span class="detail-value">
-								<a href="/app/material-request/${this.docname}" class="text-primary">
-									<strong>${this.docname}</strong>
-								</a>
-							</span>
-						</div>
-						<div class="detail-row">
-							<span class="detail-label">Current Status:</span>
-							<span class="detail-value">
-								<span class="badge badge-info">${data.workflow_state || 'Submitted'}</span>
-							</span>
-						</div>
-						<div class="detail-row">
-							<span class="detail-label">Request Type:</span>
-							<span class="detail-value">${info.material_request_type || '-'}</span>
-						</div>
-						<div class="detail-row">
-							<span class="detail-label">Company:</span>
-							<span class="detail-value">${info.company || '-'}</span>
-						</div>
-						<div class="detail-row">
-							<span class="detail-label">Required By:</span>
-							<span class="detail-value">${info.schedule_date ? frappe.datetime.str_to_user(info.schedule_date) : '-'}</span>
-						</div>
-						<div class="detail-row">
-							<span class="detail-label">Total Quantity:</span>
-							<span class="detail-value">${info.total_qty || 0}</span>
-						</div>
-					</div>
-				</div>
 
-				<!-- Next Approver Card -->
-				<div class="detail-card">
-					<div class="card-header">
-						<h4><i class="fa fa-users"></i> Next Approver Information</h4>
-					</div>
-					<div class="card-body">
-						${approver_html}
+					<!-- Next Approver Card -->
+					<div class="detail-card half-width">
+						<div class="card-header">
+							<h4><i class="fa fa-users"></i> Next Approver Information</h4>
+						</div>
+						<div class="card-body">
+							${approver_html}
+						</div>
 					</div>
 				</div>
 
