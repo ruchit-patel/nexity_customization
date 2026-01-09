@@ -263,6 +263,7 @@
 										<span class="task-ref-id">${escapeHtml(todo.reference_name)}</span>
 									` : ''}
 									${timeAgo ? `<span class="task-time">${escapeHtml(timeAgo)}</span>` : ''}
+									${!todo.is_seen ? `<span class="new-badge">New</span>` : ''}
 								</div>
 								<h3 class="task-title">${escapeHtml(todo.description_short || 'Untitled Task')}</h3>
 								${todo.reference_type && todo.reference_name && todo.reference_link ? `
