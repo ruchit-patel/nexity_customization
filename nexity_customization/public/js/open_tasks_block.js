@@ -111,7 +111,7 @@
 					</div>
 				</div>
 				<div class="view-all-tasks" id="view-all-footer" style="display: none;">
-					<a href="/app/todo" class="view-all-link">View All Tasks →</a>
+					<a href="/app/todo?allocated_to=${encodeURIComponent(frappe.session.user)}" class="view-all-link">View All Tasks →</a>
 				</div>
 			</div>
 		`;
