@@ -266,6 +266,12 @@
 									${!todo.is_seen ? `<span class="new-badge">New</span>` : ''}
 								</div>
 								<h3 class="task-title">${escapeHtml(todo.description_short || 'Untitled Task')}</h3>
+								${todo.due_text ? `
+									<div class="task-due-date ${todo.is_overdue ? 'due-overdue' : 'due-upcoming'}">
+										<span class="due-icon">${icons.calendar}</span>
+										<span class="due-text">${escapeHtml(todo.due_text)}</span>
+									</div>
+								` : ''}
 								${todo.reference_type && todo.reference_name && todo.reference_link ? `
 									<div class="task-ref-item">
 										<span class="ref-icon">${icons.link}</span>

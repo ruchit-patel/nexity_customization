@@ -233,6 +233,45 @@
 	line-height: 1.4;
 }
 
+/* Due Date */
+.task-due-date {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 10px;
+	padding: 6px 10px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.due-upcoming {
+	background: #f0f9ff;
+	border: 1px solid #bae6fd;
+	color: #0369a1;
+}
+
+.due-overdue {
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	color: #991b1b;
+}
+
+.due-icon {
+	display: flex;
+	align-items: center;
+	opacity: 0.8;
+}
+
+.due-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.due-text {
+	font-weight: 500;
+}
+
 /* Reference Item */
 .task-ref-item {
 	display: flex;

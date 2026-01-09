@@ -76,14 +76,39 @@ def get_open_todos(start=0, page_length=15, sort_order="latest"):
 				todo["assigned_by_name"] = None
 				todo["assigned_by_image"] = None
 
-			# Format date and calculate time ago
+			# Format date and calculate due status
 			if todo.date:
 				todo["date_formatted"] = frappe.utils.format_date(todo.date)
-				# Check if overdue
-				todo["is_overdue"] = get_datetime(todo.date) < get_datetime()
+				due_date = get_datetime(todo.date)
+				now = now_datetime()
+
+				# Calculate days difference (using dates only, not time)
+				days_diff = (due_date.date() - now.date()).days
+
+				if days_diff < 0:
+					# Task is overdue (past date)
+					todo["is_overdue"] = True
+					days_overdue = abs(days_diff)
+					if days_overdue == 1:
+						todo["due_text"] = "Overdue by 1 day"
+					else:
+						todo["due_text"] = f"Overdue by {days_overdue} days"
+				elif days_diff == 0:
+					# Task is due today
+					todo["is_overdue"] = False
+					todo["due_text"] = "Due today"
+				elif days_diff == 1:
+					# Task is due tomorrow
+					todo["is_overdue"] = False
+					todo["due_text"] = "Due tomorrow"
+				else:
+					# Task is due in the future
+					todo["is_overdue"] = False
+					todo["due_text"] = f"Due in {days_diff} days"
 			else:
 				todo["date_formatted"] = None
 				todo["is_overdue"] = False
+				todo["due_text"] = None
 
 			# Calculate time ago
 			if todo.modified:
