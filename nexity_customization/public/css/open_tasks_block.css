@@ -130,6 +130,32 @@
 	opacity: 1;
 }
 
+/* Rejected State - Red Theme */
+.task-card-rejected {
+	background: #fef2f2;
+	border-color: #fecaca;
+}
+
+.task-card-rejected:hover {
+	border-color: #fca5a5;
+	background: #fee2e2;
+}
+
+.task-card-rejected .task-ref-id {
+	background: #fee2e2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
+.task-card-rejected .task-icon {
+	background: #fee2e2;
+	color: #991b1b;
+}
+
+.task-card-rejected .task-title {
+	color: #991b1b;
+}
+
 /* Left Border Color Indicator */
 .task-card-border {
 	position: absolute;
@@ -195,6 +221,7 @@
 	align-items: center;
 	gap: 8px;
 	margin-bottom: 6px;
+	flex-wrap: wrap;
 }
 
 .task-ref-id {
@@ -222,6 +249,56 @@
 	font-size: 12px;
 	color: #9ca3af;
 	margin-left: auto;
+}
+
+/* Inline Meta Items */
+.task-item-inline,
+.task-rejected-info,
+.task-assigned-inline {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 12px;
+	color: #6b7280;
+}
+
+.task-item-inline .ref-icon,
+.task-rejected-info .status-icon,
+.task-assigned-inline .assigned-icon {
+	display: inline-flex;
+	align-items: center;
+	opacity: 0.7;
+}
+
+.task-item-inline .ref-icon svg,
+.task-rejected-info .status-icon svg,
+.task-assigned-inline .assigned-icon svg {
+	width: 13px;
+	height: 13px;
+}
+
+.task-item-inline .ref-link {
+	color: #2563eb;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.task-item-inline .ref-link:hover {
+	color: #1d4ed8;
+	text-decoration: underline;
+}
+
+.task-rejected-info {
+	color: #991b1b;
+	font-weight: 500;
+}
+
+.task-rejected-info .status-icon {
+	color: #dc2626;
+}
+
+.task-assigned-inline {
+	font-weight: 400;
 }
 
 /* Task Title */

@@ -249,44 +249,40 @@
 		todos.forEach(function(todo) {
 			const icon = getIconForType(todo.reference_type);
 			const isSeenClass = todo.is_seen ? 'task-card-seen' : '';
+			const isRejectedClass = todo.is_rejected ? 'task-card-rejected' : '';
 			const timeAgo = todo.time_ago || '';
 
+			// Extract rejection info
+			const desc = (todo.description_short || '').toLowerCase();
+			let rejectionInfo = '';
+			if (desc.includes('rejected') || desc.includes('returned')) {
+				const match = todo.description_short.match(/(?:Rejected|Returned) by ([^on]+) on (.+)/i);
+				if (match) {
+					rejectionInfo = `<span class="task-rejected-info"><span class="status-icon">${icons.xCircle}</span>Rejected by ${escapeHtml(match[1])}</span>`;
+				}
+			}
+
 			html += `
-				<div class="task-card ${isSeenClass}" data-todo="${todo.name}" data-seen="${todo.is_seen}" data-ref-link="${todo.reference_link || ''}">
+				<div class="task-card ${isSeenClass} ${isRejectedClass}" data-todo="${todo.name}" data-seen="${todo.is_seen}" data-ref-link="${todo.reference_link || ''}">
 					<div class="task-card-border ${getLeftBorderColor(todo)}"></div>
 					<div class="task-card-content">
 						<div class="task-card-header">
 							<div class="task-icon">${icon}</div>
 							<div class="task-main">
 								<div class="task-meta-row">
-									${todo.reference_name ? `
-										<span class="task-ref-id">${escapeHtml(todo.reference_name)}</span>
-									` : ''}
-									${timeAgo ? `<span class="task-time">${escapeHtml(timeAgo)}</span>` : ''}
+									${todo.reference_name ? `<span class="task-ref-id">${escapeHtml(todo.reference_name)}</span>` : ''}
+									${rejectionInfo}
+									${todo.assigned_by_name && !rejectionInfo ? `<span class="task-assigned-inline"><span class="assigned-icon">${icons.user}</span>${escapeHtml(todo.assigned_by_label || 'Raised by')}: ${escapeHtml(todo.assigned_by_name)}</span>` : ''}
 									${!todo.is_seen ? `<span class="new-badge">New</span>` : ''}
+									${timeAgo ? `<span class="task-time">${escapeHtml(timeAgo)}</span>` : ''}
 								</div>
 								<h3 class="task-title">${escapeHtml(todo.description_short || 'Untitled Task')}</h3>
-								${todo.due_text ? `
+								${todo.due_text && !todo.is_rejected ? `
 									<div class="task-due-date ${todo.is_overdue ? 'due-overdue' : 'due-upcoming'}">
 										<span class="due-icon">${icons.calendar}</span>
 										<span class="due-text">${escapeHtml(todo.due_text)}</span>
 									</div>
 								` : ''}
-								${todo.reference_type && todo.reference_name && todo.reference_link ? `
-									<div class="task-ref-item">
-										<span class="ref-icon">${icons.link}</span>
-										<a href="${todo.reference_link}" class="ref-link" onclick="event.stopPropagation();">
-											Item: ${escapeHtml(todo.reference_name)}
-										</a>
-									</div>
-								` : ''}
-								${todo.assigned_by_name ? `
-									<div class="task-assigned-by">
-										<span class="assigned-icon">${icons.user}</span>
-										<span class="assigned-text">Raised by: ${escapeHtml(todo.assigned_by_name)}</span>
-									</div>
-								` : ''}
-								${getStatusBadge(todo)}
 							</div>
 						</div>
 					</div>
@@ -328,25 +324,6 @@
 				}
 			});
 		});
-	}
-
-	/**
-	 * Get status badge
-	 */
-	function getStatusBadge(todo) {
-		const desc = (todo.description_short || '').toLowerCase();
-		if (desc.includes('rejected') || desc.includes('returned')) {
-			const match = todo.description_short.match(/(?:Rejected|Returned) by ([^on]+) on (.+)/i);
-			if (match) {
-				return `
-					<div class="task-status-badge status-rejected-badge">
-						<span class="status-icon">${icons.xCircle}</span>
-						<span>Rejected by ${escapeHtml(match[1])} on ${escapeHtml(match[2])}</span>
-					</div>
-				`;
-			}
-		}
-		return '';
 	}
 
 	/**

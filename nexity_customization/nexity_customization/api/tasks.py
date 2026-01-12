@@ -67,6 +67,11 @@ def get_open_todos(start=0, page_length=15, sort_order="latest"):
 			else:
 				todo["description_short"] = ""
 
+			# Check if this is a rejected/cancelled task
+			desc_lower = (todo.description_short or "").lower()
+			is_rejected = "rejected" in desc_lower or "returned" in desc_lower
+			todo["is_rejected"] = is_rejected
+
 			# Get assigned by user info
 			if todo.assigned_by:
 				assigned_by_user = frappe.get_cached_value("User", todo.assigned_by, ["full_name", "user_image"])
@@ -75,6 +80,9 @@ def get_open_todos(start=0, page_length=15, sort_order="latest"):
 			else:
 				todo["assigned_by_name"] = None
 				todo["assigned_by_image"] = None
+
+			# Set the label based on rejection status
+			todo["assigned_by_label"] = "Rejected by" if is_rejected else "Raised by"
 
 			# Format date and calculate due status
 			if todo.date:
