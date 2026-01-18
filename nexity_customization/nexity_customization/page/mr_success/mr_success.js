@@ -243,7 +243,8 @@ class MRSuccessView {
 		});
 
 		this.wrapper.find('.btn-dashboard').on('click', () => {
-			frappe.set_route('List', 'Material Request');
+			// Navigate to user's default workspace
+			frappe.set_route('');
 		});
 
 		this.wrapper.find('.btn-view-request').on('click', () => {

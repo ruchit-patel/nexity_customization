@@ -176,11 +176,11 @@ permission_query_conditions = {
 # ---------------
 # Hook on document methods and events
 
-doc_events = {
-	"Material Request": {
-		"before_submit": "nexity_customization.nexity_customization.overrides.material_request.before_submit"
-	}
-}
+# doc_events = {
+# 	"Material Request": {
+# 		"before_submit": "nexity_customization.nexity_customization.overrides.material_request.before_submit"
+# 	}
+# }
 
 # Scheduled Tasks
 # ---------------
