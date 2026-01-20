@@ -55,21 +55,31 @@ function show_submit_confirmation(frm) {
 	frappe.confirm(
 		confirmation_html,
 		function() {
-			// User confirmed - proceed with standard Frappe submit
-			frm.savesubmit().then(() => {
-				// After successful submit, optionally redirect to success page
-				frappe.call({
-					method: 'nexity_customization.nexity_customization.api.material_request.get_next_approver_info',
-					args: {
-						docname: frm.doc.name
-					},
-					callback: function(r) {
-						if (r.message && !r.message.error) {
-							redirect_to_success_page(frm.doc.name, r.message);
+			// User confirmed - save first, then apply workflow action
+		
+				// Apply workflow action (this will transition to next state without setting docstatus=1)
+				frappe.xcall('frappe.model.workflow.apply_workflow', {
+					doc: frm.doc,
+					action: 'Submit'  // This should match your workflow action name
+				}).then(() => {
+					frm.reload_doc();
+
+					// After workflow action, redirect to success page
+					frappe.call({
+						method: 'nexity_customization.nexity_customization.api.material_request.get_next_approver_info',
+						args: {
+							docname: frm.doc.name
+						},
+						callback: function(r) {
+							if (r.message && !r.message.error) {
+								redirect_to_success_page(frm.doc.name, r.message);
+							}
 						}
-					}
+					});
+				}).catch((err) => {
+					frappe.msgprint(__('Failed to submit Material Request'));
 				});
-			});
+		
 		},
 		function() {
 			// User cancelled
