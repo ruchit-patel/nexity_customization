@@ -1,24 +1,32 @@
 frappe.ui.form.on('Material Request', {
 	refresh: function(frm) {
-		// Override the Submit button to show confirmation dialog
-		if (frm.doc.docstatus === 0 && !frm.is_new()) {
-			// Replace primary action
-			frm.page.clear_primary_action();
-			frm.page.set_primary_action(__('Submit'), function() {
-				show_submit_confirmation(frm);
-			});
+		// Only show custom confirmation for initial submission (Draft state)
+		// Approvers and other workflow states use standard workflow buttons
+		const is_initial_draft = frm.doc.docstatus === 0 &&
+		                          !frm.is_new() &&
+		                          (!frm.doc.workflow_state || frm.doc.workflow_state === 'Draft');
 
-			// Remove Submit from Actions dropdown - need to wait for Frappe to add it first
-			setTimeout(() => {
-				// Remove the Submit menu item from the dropdown
-				frm.page.clear_actions_menu();
+		if (is_initial_draft) {
+			// Get the dynamic button label from workflow
+			get_workflow_action_for_submit(frm).then((action_name) => {
+				const button_label = action_name || __('Submit');
 
-				// Re-add other standard actions except Submit
-				frm.page.add_action_item(__('Help'), function() {
-					frappe.help.show_video(frm.meta.documentation);
+				// Replace primary action with dynamic label
+				frm.page.clear_primary_action();
+				frm.page.set_primary_action(button_label, function() {
+					show_submit_confirmation(frm);
 				});
-			}, 200);
+
+				// Remove Submit from Actions dropdown
+				setTimeout(() => {
+					frm.page.clear_actions_menu();
+					frm.page.add_action_item(__('Help'), function() {
+						frappe.help.show_video(frm.meta.documentation);
+					});
+				}, 200);
+			});
 		}
+		// For all other workflow states, Frappe's standard workflow buttons will appear
 	}
 });
 
@@ -55,31 +63,33 @@ function show_submit_confirmation(frm) {
 	frappe.confirm(
 		confirmation_html,
 		function() {
-			// User confirmed - save first, then apply workflow action
-		
-				// Apply workflow action (this will transition to next state without setting docstatus=1)
-				frappe.xcall('frappe.model.workflow.apply_workflow', {
-					doc: frm.doc,
-					action: 'Submit'  // This should match your workflow action name
-				}).then(() => {
-					frm.reload_doc();
+			// User confirmed - get workflow action dynamically and apply it
+			get_workflow_action_for_submit(frm).then((action_name) => {
+				if (!action_name) {
+					// No workflow configured, use standard submit
+				
+						show_success_and_redirect(frm);
+					
+					return;
+				}
 
-					// After workflow action, redirect to success page
-					frappe.call({
-						method: 'nexity_customization.nexity_customization.api.material_request.get_next_approver_info',
-						args: {
-							docname: frm.doc.name
-						},
-						callback: function(r) {
-							if (r.message && !r.message.error) {
-								redirect_to_success_page(frm.doc.name, r.message);
-							}
-						}
-					});
-				}).catch((err) => {
-					frappe.msgprint(__('Failed to submit Material Request'));
-				});
+				// Save first, then apply workflow action
 		
+					frappe.xcall('frappe.model.workflow.apply_workflow', {
+						doc: frm.doc,
+						action: action_name
+					}).then(() => {
+						frm.reload_doc();
+						show_success_and_redirect(frm);
+					}).catch((err) => {
+						frappe.msgprint({
+							title: __('Error'),
+							message: __('Failed to submit Material Request: {0}', [err.message || err]),
+							indicator: 'red'
+						});
+					});
+				
+			});
 		},
 		function() {
 			// User cancelled
@@ -89,6 +99,95 @@ function show_submit_confirmation(frm) {
 			});
 		}
 	);
+}
+
+function get_workflow_action_for_submit(frm) {
+	// Get the first available workflow action from current state
+	return new Promise((resolve) => {
+		if (!frm.doc.workflow_state) {
+			// Check if workflow is assigned to this doctype
+			frappe.db.get_value('Workflow', {
+				document_type: 'Material Request',
+				is_active: 1
+			}, 'name').then((r) => {
+				if (r && r.message && r.message.name) {
+					// Workflow exists, get first transition from Draft state
+					frappe.call({
+						method: 'frappe.client.get',
+						args: {
+							doctype: 'Workflow',
+							name: r.message.name
+						},
+						callback: function(workflow_data) {
+							if (workflow_data.message && workflow_data.message.transitions) {
+								// Find first transition from Draft state (or current state)
+								const current_state = frm.doc.workflow_state || 'Draft';
+								const transition = workflow_data.message.transitions.find(
+									t => t.state === current_state
+								);
+								resolve(transition ? transition.action : null);
+							} else {
+								resolve(null);
+							}
+						}
+					});
+				} else {
+					resolve(null);
+				}
+			});
+		} else {
+			// Workflow state exists, get available actions
+			frappe.call({
+				method: 'frappe.client.get_value',
+				args: {
+					doctype: 'Workflow',
+					filters: {
+						document_type: 'Material Request',
+						is_active: 1
+					},
+					fieldname: 'name'
+				},
+				callback: function(r) {
+					if (r.message && r.message.name) {
+						frappe.call({
+							method: 'frappe.client.get',
+							args: {
+								doctype: 'Workflow',
+								name: r.message.name
+							},
+							callback: function(workflow_data) {
+								if (workflow_data.message && workflow_data.message.transitions) {
+									const transition = workflow_data.message.transitions.find(
+										t => t.state === frm.doc.workflow_state
+									);
+									resolve(transition ? transition.action : null);
+								} else {
+									resolve(null);
+								}
+							}
+						});
+					} else {
+						resolve(null);
+					}
+				}
+			});
+		}
+	});
+}
+
+function show_success_and_redirect(frm) {
+	// After successful submit/workflow action, redirect to success page
+	frappe.call({
+		method: 'nexity_customization.nexity_customization.api.material_request.get_next_approver_info',
+		args: {
+			docname: frm.doc.name
+		},
+		callback: function(r) {
+			if (r.message && !r.message.error) {
+				redirect_to_success_page(frm.doc.name, r.message);
+			}
+		}
+	});
 }
 
 function redirect_to_success_page(docname, response_data) {
