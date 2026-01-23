@@ -193,19 +193,6 @@ class MRSuccessView {
 					</div>
 				</div>
 
-				<!-- Action Buttons -->
-				<div class="action-buttons">
-					<button class="btn btn-primary btn-lg btn-new-request">
-						<i class="fa fa-plus"></i> Submit New Request
-					</button>
-					<button class="btn btn-default btn-lg btn-dashboard">
-						<i class="fa fa-th-list"></i> View Dashboard
-					</button>
-					<button class="btn btn-secondary btn-lg btn-view-request">
-						<i class="fa fa-eye"></i> View This Request
-					</button>
-				</div>
-
 				<!-- Next Steps Info -->
 				<div class="next-steps-info">
 					<p><i class="fa fa-info-circle"></i> <strong>What happens next?</strong></p>

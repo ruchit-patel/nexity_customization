@@ -11,15 +11,22 @@ frappe.ui.form.on('Material Request', {
 			get_workflow_action_for_submit(frm).then((action_name) => {
 				const button_label = action_name || __('Submit');
 
-				// Replace primary action with dynamic label
+				// Add primary action button (outside)
 				frm.page.clear_primary_action();
 				frm.page.set_primary_action(button_label, function() {
 					show_submit_confirmation(frm);
 				});
 
-				// Remove Submit from Actions dropdown
+				// Also add the same button inside Actions dropdown
 				setTimeout(() => {
 					frm.page.clear_actions_menu();
+
+					// Add Submit button inside Actions menu
+					frm.page.add_action_item(button_label, function() {
+						show_submit_confirmation(frm);
+					});
+
+					// Add Help option
 					frm.page.add_action_item(__('Help'), function() {
 						frappe.help.show_video(frm.meta.documentation);
 					});
@@ -55,7 +62,7 @@ function show_submit_confirmation(frm) {
 			</div>
 			<p style="font-size: 13px; color: #6c757d;">
 				<i class="fa fa-info-circle"></i>
-				Once submitted, this request will be sent to the approver based on the workflow.
+				Once submitted, this request will be sent to the approver.
 			</p>
 		</div>
 	`;
