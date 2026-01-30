@@ -9,7 +9,12 @@ frappe.ui.form.on('Material Request', {
 		if (is_initial_draft) {
 			// Get the dynamic button label from workflow
 			get_workflow_action_for_submit(frm).then((action_name) => {
-				const button_label = action_name || __('Submit');
+				if (!action_name) {
+					// No workflow action available, don't show any button
+					return;
+				}
+
+				const button_label = action_name;
 
 				// Add primary action button (outside)
 				frm.page.clear_primary_action();
